@@ -9,6 +9,7 @@ import soundfile as sf
 from reazonspeech.espnet.asr import transcribe, audio_from_path
 from custom_load_model import load_model
 import threading
+import nltk
 
 # 设置 Hugging Face 镜像端点
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
@@ -24,6 +25,17 @@ os.environ['TRANSFORMERS_CACHE'] = os.path.join(current_dir, '.cache', 'hf_cache
 
 os.makedirs(os.path.join(current_dir, '.cache', 'hf_cache'), exist_ok=True)
 
+nltk.data.path.append(os.path.join(current_dir, '.cache', 'nltk_data'))
+os.makedirs(os.path.join(current_dir, '.cache', 'nltk_data'), exist_ok=True)
+# 检查并下载 NLTK 数据
+try:
+    nltk.data.find('taggers/averaged_perceptron_tagger.zip')
+except LookupError:
+    nltk.download('averaged_perceptron_tagger', download_dir=os.path.join(current_dir, '.cache', 'nltk_data'))
+try:
+    nltk.data.find('corpora/cmudict.zip')
+except LookupError:
+    nltk.download('cmudict', download_dir=os.path.join(current_dir, '.cache', 'nltk_data'))
 
 app = Flask(__name__)
 # 线程锁，确保模型操作的线程安全
