@@ -16,6 +16,8 @@ RUN pip install --no-cache-dir \
 
 COPY main.py custom_load_model.py ./
 
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
 EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "-w", "4","--timeout","0", "-b", "0.0.0.0:5000", "main:app"]
+ENTRYPOINT ["gunicorn", "-w", "1","--timeout","0", "-b", "0.0.0.0:5000", "main:app"]
