@@ -2,17 +2,17 @@ import nltk
 import os
 
 current_dir = os.getcwd()
-nltk.data.path.append(os.path.join(current_dir, '.cache', 'nltk_data'))
-os.makedirs(os.path.join(current_dir, '.cache', 'nltk_data'), exist_ok=True)
+nltk.data.path.append(os.path.join(current_dir, 'cache', 'nltk_data'))
+os.makedirs(os.path.join(current_dir, 'cache', 'nltk_data'), exist_ok=True)
 # 检查并下载 NLTK 数据
 try:
     nltk.data.find('taggers/averaged_perceptron_tagger.zip')
 except LookupError:
-    nltk.download('averaged_perceptron_tagger', download_dir=os.path.join(current_dir, '.cache', 'nltk_data'))
+    nltk.download('averaged_perceptron_tagger', download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
 try:
     nltk.data.find('corpora/cmudict.zip')
 except LookupError:
-    nltk.download('cmudict', download_dir=os.path.join(current_dir, '.cache', 'nltk_data'))
+    nltk.download('cmudict', download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
 
 from flask import Flask, request, jsonify
 import io
@@ -30,13 +30,13 @@ os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 # 获取当前工作目录
 
 # 设置 Hugging Face 缓存目录为当前目录下的 hf_cache 文件夹
-os.environ['HF_HOME'] = os.path.join(current_dir, '.cache', 'hf_cache')
+os.environ['HF_HOME'] = os.path.join(current_dir, 'cache', 'hf_cache')
 # 设置 PyTorch 缓存目录为当前目录下的 hf_cache/torch 文件夹
-os.environ['TORCH_HOME'] = os.path.join(current_dir, '.cache', 'hf_cache', 'torch')
+os.environ['TORCH_HOME'] = os.path.join(current_dir, 'cache', 'hf_cache', 'torch')
 # 设置 Transformers 缓存目录为当前目录下的 hf_cache/transformers 文件夹
-os.environ['TRANSFORMERS_CACHE'] = os.path.join(current_dir, '.cache', 'hf_cache', 'transformers')
+os.environ['TRANSFORMERS_CACHE'] = os.path.join(current_dir, 'cache', 'hf_cache', 'transformers')
 
-os.makedirs(os.path.join(current_dir, '.cache', 'hf_cache'), exist_ok=True)
+os.makedirs(os.path.join(current_dir, 'cache', 'hf_cache'), exist_ok=True)
 
 app = Flask(__name__)
 # 线程锁，确保模型操作的线程安全
@@ -58,7 +58,7 @@ def process_audio(audio_data):
         sf.write(buffer, amplified_y, 16000, format='WAV', subtype='PCM_16')
         buffer.seek(0)
 
-        temp_wav_path = os.path.join(current_dir, '.cache', 'tmp')
+        temp_wav_path = os.path.join(current_dir, 'cache', 'tmp')
         os.makedirs(temp_wav_path, exist_ok=True)
         # === Step 4: Save buffer to a temp WAV file for ASR model ===
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav", dir=temp_wav_path) as tmp:
