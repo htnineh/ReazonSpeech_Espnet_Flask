@@ -23,7 +23,7 @@ def load_model(device=None):
 
     return from_pretrained(
         "https://huggingface.co/reazon-research/reazonspeech-espnet-v2",
-        os.path.join(os.getcwd(), 'cache', 'esp_cache'),
+        os.path.join(os.getcwd(), '.cache', 'esp_cache'),
         lm_weight=0,
         device=device,
     )
