@@ -1,8 +1,6 @@
 FROM python:3.10
 LABEL authors="gxf99"
 
-ENTRYPOINT ["top", "-b"]
-
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,4 +18,4 @@ COPY main.py custom_load_model.py ./
 
 EXPOSE 5000
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "main:app"]
+ENTRYPOINT ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "main:app"]
