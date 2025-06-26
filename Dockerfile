@@ -18,4 +18,4 @@ COPY main.py custom_load_model.py ./
 
 EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "main:app"]
+ENTRYPOINT ["gunicorn", "-w", "4","--timeout","0", "-b", "0.0.0.0:5000", "main:app"]
