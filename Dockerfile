@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir \
     flask \
     gunicorn \
     && git clone https://github.com/reazon-research/ReazonSpeech.git \
-    && pip install --no-cache-dir ReazonSpeech/pkg/nemo-asr \
+    && pip install --no-cache-dir ReazonSpeech/pkg/espnet-asr \
     && rm -rf ReazonSpeech
 
 COPY main.py custom_load_model.py ./
