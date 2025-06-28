@@ -1,6 +1,11 @@
 import nltk
 import os
 
+import psutil
+
+current_process = psutil.Process()
+current_process.cpu_affinity([0, 1, 2, 3, 4, 5])
+
 current_dir = os.getcwd()
 nltk.data.path.append(os.path.join(current_dir, 'cache', 'nltk_data'))
 os.makedirs(os.path.join(current_dir, 'cache', 'nltk_data'), exist_ok=True)
@@ -42,7 +47,7 @@ app = Flask(__name__)
 # 线程锁，确保模型操作的线程安全
 model_lock = threading.Lock()
 # 加载语音识别模型
-model = load_model(device="cpu")
+model = load_model(device="cuda")
 
 
 def process_audio(audio_data):
