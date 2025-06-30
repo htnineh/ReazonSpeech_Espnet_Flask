@@ -19,18 +19,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir \
     flask \
     gunicorn \
-    && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118\
-    && git clone https://github.com/reazon-research/ReazonSpeech.git \
-    && pip install --no-cache-dir ReazonSpeech/pkg/espnet-asr \
-    && rm -rf ReazonSpeech
-
-RUN pip install --no-cache-dir \
-    nltk
-
-RUN pip install --no-cache-dir \
+    nltk \
     librosa \
     numpy \
-    soundfile
+    soundfile \
+    && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118\
+
+
+RUN git clone https://github.com/reazon-research/ReazonSpeech.git \
+    && pip install --no-cache-dir ReazonSpeech/pkg/espnet-asr \
+#    && rm -rf ReazonSpeech
+
+
 
 
 COPY main.py custom_load_model.py ./
