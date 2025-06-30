@@ -27,6 +27,12 @@ RUN pip install --no-cache-dir \
 RUN pip install --no-cache-dir \
     nltk
 
+RUN pip install --no-cache-dir \
+    librosa \
+    numpy \
+    soundfile
+
+
 COPY main.py custom_load_model.py ./
 
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
