@@ -24,6 +24,9 @@ RUN pip install --no-cache-dir \
     && pip install --no-cache-dir ReazonSpeech/pkg/espnet-asr \
     && rm -rf ReazonSpeech
 
+RUN pip install --no-cache-dir \
+    nltk
+
 COPY main.py custom_load_model.py ./
 
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
