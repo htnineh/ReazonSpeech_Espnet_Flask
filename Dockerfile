@@ -27,8 +27,7 @@ RUN pip install --no-cache-dir \
 
 
 RUN git clone https://github.com/reazon-research/ReazonSpeech.git \
-    && pip install --no-cache-dir ReazonSpeech/pkg/espnet-asr \
-#    && rm -rf ReazonSpeech
+    && pip install ReazonSpeech/pkg/espnet-asr
 
 
 
