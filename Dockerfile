@@ -32,6 +32,11 @@ RUN git clone https://github.com/reazon-research/ReazonSpeech.git \
     && pip install ReazonSpeech/pkg/espnet-asr\
     && rm -rf ReazonSpeech
 
+RUN wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.0.post2/flash_attn-2.8.0.post2+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl \
+    && pip install --no-cache-dir flash_attn-2.8.0.post2+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl \
+    && rm flash_attn-2.8.0.post2+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+
 COPY main.py custom_load_model.py ./
 
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
