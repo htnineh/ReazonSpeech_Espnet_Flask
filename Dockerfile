@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir \
     librosa \
     numpy \
     soundfile \
-    && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118\
+    && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 
 RUN git clone https://github.com/reazon-research/ReazonSpeech.git \
