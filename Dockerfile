@@ -25,6 +25,10 @@ RUN pip install --no-cache-dir \
     soundfile \
     && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
+RUN pip install --no-cache-dir \
+    setuptools \
+    wheel
+
 
 RUN git clone https://github.com/reazon-research/ReazonSpeech.git \
     && pip install ReazonSpeech/pkg/espnet-asr
