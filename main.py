@@ -1,28 +1,14 @@
-import nltk
 import os
-
-current_dir = os.getcwd()
-nltk.data.path.append(os.path.join(current_dir, 'cache', 'nltk_data'))
-os.makedirs(os.path.join(current_dir, 'cache', 'nltk_data'), exist_ok=True)
-# 检查并下载 NLTK 数据
-try:
-    nltk.data.find('taggers/averaged_perceptron_tagger.zip')
-except LookupError:
-    nltk.download('averaged_perceptron_tagger', download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
-try:
-    nltk.data.find('corpora/cmudict.zip')
-except LookupError:
-    nltk.download('cmudict', download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
-
+from multiprocessing import Process, Queue
 from flask import Flask, request, jsonify
 import io
 import tempfile
 import librosa
 import numpy as np
 import soundfile as sf
-from reazonspeech.espnet.asr import transcribe, audio_from_path
-from custom_load_model import load_model
 import threading
+
+current_dir = os.getcwd()
 
 # 设置 Hugging Face 镜像端点
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
@@ -38,15 +24,20 @@ os.environ['TRANSFORMERS_CACHE'] = os.path.join(current_dir, 'cache', 'hf_cache'
 
 os.makedirs(os.path.join(current_dir, 'cache', 'hf_cache'), exist_ok=True)
 
-app = Flask(__name__)
 # 线程锁，确保模型操作的线程安全
 model_lock = threading.Lock()
-# 加载语音识别模型
-model = load_model(device="cuda")
+
+app = Flask(__name__)
+
+
+def process_audio_wrapper(audio_data, result_queue):
+    result = process_audio(audio_data)
+    result_queue.put(result)
 
 
 def process_audio(audio_data):
     try:
+
         # === Step 1: Load and resample audio to 16,000 Hz ===
         y, sr = librosa.load(io.BytesIO(audio_data), sr=16000, mono=True)
 
@@ -67,6 +58,24 @@ def process_audio(audio_data):
 
         # === Step 5: Transcribe ===
         with model_lock:
+            from reazonspeech.espnet.asr import transcribe, audio_from_path
+            from custom_load_model import load_model
+            import nltk
+
+            nltk.data.path.append(os.path.join(current_dir, 'cache', 'nltk_data'))
+            os.makedirs(os.path.join(current_dir, 'cache', 'nltk_data'), exist_ok=True)
+            # 检查并下载 NLTK 数据
+            try:
+                nltk.data.find('taggers/averaged_perceptron_tagger.zip')
+            except LookupError:
+                nltk.download('averaged_perceptron_tagger',
+                              download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
+            try:
+                nltk.data.find('corpora/cmudict.zip')
+            except LookupError:
+                nltk.download('cmudict', download_dir=os.path.join(current_dir, 'cache', 'nltk_data'))
+
+            model = load_model(device="cuda")
             audio = audio_from_path(temp_wav_path)
             ret = transcribe(model, audio)
             os.unlink(temp_wav_path)
@@ -85,8 +94,11 @@ def transcribe_audio():
 
     audio_data = file.read()
 
-    result = process_audio(audio_data)
-    return jsonify(result)
+    result_queue = Queue()
+    p = Process(target=process_audio_wrapper, args=(audio_data, result_queue))
+    p.start()
+    p.join()
+    return jsonify(result_queue.get())
 
 
 if __name__ == '__main__':
